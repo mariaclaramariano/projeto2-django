@@ -2,33 +2,49 @@
 from django.shortcuts import render
 from .models import contato
 import datetime
-from .forms import ContatoForm
+from django.contrib import messages
+from .forms import ContatoForm,produtoModelForm
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
+from .models import produto
+from django.shortcuts import redirect
+
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    context = {
+        'produtos': produto.objects.all()}
+
+    return render(request, 'index.html', context)
 
 def contato (request):
-    data = {}
+    
     forms = ContatoForm(request.POST or None)
+    
+    if forms.is_valid() :
         
-    if str (request.method) == 'post':
-        if forms.is_valid():
-            descrição = forms.cleaned_data ['descrição']
-            valor = forms.cleaned_data['valor']
-            observações = forms.cleaned_data['observações']
-            
-
-            print("mensagem enviada!")
-            print('descrição: ',descrição)
-            print('valor: ', valor)
-            print('observações: ',observações)
-            
-            messages.sucess(request, 'tudo ok!')
+            forms.send_mail()    
+            messages.success(request, 'tudo ok!')
             forms = ContatoForm()
-        else:
-            messages.error(request, 'tem algo errado!')
-    data['form']= forms
-    return render(request, 'contato.html', data)
+    else:
+                messages.error(request, 'tem algo errado!')
+        
+    context = {'form' : forms}
+    return render(request, 'contato.html', context)
 
-def produto(request):
-    return render(request, 'produto.html')
+def produto1 (request):
+    if str(request.user) != 'AnonymousUser':
+        if str(request.method) == "POST":
+                forms= produtoModelForm(request.POST, request.FILES)
+                if forms.is_valid() :
+                    forms.save()
+
+                    messages.success(request, ' produto salvo com sucesso!')
+                else:
+                    messages.error(request, 'erro ao salvar o produto!')
+        else:   
+            forms = produtoModelForm()
+        context = {
+            'form': forms }
+        return render(request, 'produto.html', context)
+    else :
+        return redirect(index)

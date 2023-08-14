@@ -16,10 +16,6 @@
         <form href="{{contato.html}}" action="" method='post' class = 'forms' autocomplete="off">
         {% csrf_token %}
         {% bootstrap_form form %}
-
-           
-            
-       
         {% buttons %}
             <button type="submit" class="btn=primary">enviar mensagem</button>
         {% endbuttons%}

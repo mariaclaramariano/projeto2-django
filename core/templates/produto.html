@@ -1,11 +1,25 @@
+{% load bootstrap4 %}
 <!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>produto</title>
+    {% bootstrap_css %}
 </head>
 <body>
-    <h1>produto <br> esse produto paraece ideal para você!</h1>
+    <div class ='container'>
+    <h1>produto </h1>
+    {% bootstrap_messages %}
+        
+    <form href="{{contato.html}}" action="" method="post" class="forms" autocomplete="off" enctype="multipart/form-data"></form>
+    {% csrf_token %}
+
+    {% bootstrap_form form %}
+    {% buttons %}
+            <button type="submit" class="btn=primary">enviar mensagem</button>
+        {% endbuttons%}
+    </div>
+    {% bootstrap_javascript jquery='full'%}
 </body>
 </html>
